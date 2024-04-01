@@ -1,0 +1,19 @@
+Step 1: Enumeration
+  Begin by running an nmap scan of the target IP address in order to find any open ports. We will use the -sC tag; while intrusive, it will allow us to gain as much information as possible. 
+    We will also run the -sV tag in order to enumerate what versions are running on what ports.
+  From our scan, we find that one port is open, 3306. This port is running MySQL 5.5.5-10.3.27-MariaDB-0+deb10u1.
+    Now we know we are dealing with a MySQL database on MariaDB.
+Step 2: Access
+  Using the mysql command we can hopefully gain access to the target server. While MySQL generally authenticates with a username and password,
+    sometimes there might be a misconfiguration which could allow passwordless login. 
+  mysql -h {target_IP} -u root
+  From here we connect to the database. Now we will need to use MySQL commands to navigate further. First, evrey command will end with ;
+    Second, we can find a list of useful commands online, however the ones we will use here are 
+      SHOW databases;
+      USE {database_name};
+      SHOW tables;
+      SELECT * FROM {table_name};
+    SHOW databases; gives us an output of three common databases and one of interest, htb. 
+    USE htb; allows use to select the htb database
+    SHOW tables; outputs two tables, config and users, in the htb database
+    SELECT * FROM config; reveals all the informaton in the config table. In the table we see the flag: 7b4bec00d1a39e3dd4e021ec3d915da8
