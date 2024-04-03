@@ -1,0 +1,23 @@
+Step 1: Enumeration
+  Begin by running an nmap scan of the target IP address in order to find any open ports. We will use the -sC tag; while intrusive, it will allow us to gain as much information as possible. 
+    We will also run the -sV tag in order to enumerate what versions are running on what ports.
+  From our scan, we find that two ports are open, 21 and 80. Port 21 is an open tcp port that is running ftp version vsftpd 3.0.3, and port 80 is an open tcp port runin Apache httpd 2.4.41.
+  Luckily, this server is configured to allow anonymous ftp login ftp code 230.
+    ftp 10.129.170.216
+      anonymous
+      From here we can use the dir command to check the contents of our current directory. We see two intersting files, allowed.userlist and allowed.userlist.passwd.
+        dir
+      Now we can use the get command to download both of those files.
+        get allowed.userlist
+        get allowed.userlist.passwd
+      After downloading both files, we are finished with the ftp server.
+        exit
+    Using cat we can read the information in both files.
+      cat allowed.userlist
+      cat allowed.userlist.passwd
+Step 2: Access
+  Using gobuster we can enumerate hidden directories on the target IP address, specifically html and php file types.
+    gobuster dir --url http://10.129.170.216/ --wordlist /usr/share/wordlist/dirbuster/directory-list-2.3-small.txt -x php,html
+    An output of not is the /login.ph page.
+  Navigating to http://10.129.170.216/login.php greets us with a login page where we can enter the admin username and passowrd found on the ftp server.
+  Once logged in, we find or flag: c7110277ac44d78b6a9fff2232434d16
